@@ -1,1 +1,38 @@
+node
+{
+properties([[$class: 'JiraProjectProperty'], buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5')), pipelineTriggers([pollSCM('* * * * *')])])
+def mavenHome = tool name: "maven3.6.3"
+
+stage('checkoutCode')
+{
+git branch: 'development', credentialsId: 'bbf2483b-27fe-447a-873f-a484eba6e458', url: 'https://github.com/modhakiran/maven-web-application.git'
+}
+
+stage('build')
+{
+sh "${mavenHome}/bin/mvn clean packsge"
+}
+
+stage('executeSonarQubeReport')
+{
+sh "${mavenHome}/bin/mvn sonar:sonar"
+}
+
+stage('uploadArtifactIntoNexus')
+{
+sh "${mavenHome}/bin/mvn deploy"
+}
+ stage ('DeployIntoTomcatServer')
+ {
+ sshagent(['6676f9db-978a-4d5f-bd48-e06b1db777ea']) 
+ {
+ sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@35.182.134.112:/opt/apache-tomcat-9.0.41/webapps/"
+}
+
+}
+ stage ('email')
+ {
+ mail bcc: 'modhakiran2gmail.com', body: 'build over', cc: 'modhakiran@gmail.com', from: '', replyTo: '', subject: 'build over', to: 'modhakiran@gmail.com'
+ }
+}
 
