@@ -1,47 +1,37 @@
 node
 {
-    properties([[$class: 'JiraProjectProperty'], buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5')), pipelineTriggers([pollSCM('* * * * *')])])
+properties([[$class: 'JiraProjectProperty'], buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5')), pipelineTriggers([pollSCM('* * * * *')])])
+def mavenHome = tool name: "maven3.6.3"
 
-
-def mavenHome = tool name: "mavan3.6.3"
-
-stage('CheckoutCode')
+stage('checkoutCode')
 {
- git branch: 'development', credentialsId: '6b6cc262-f6e1-4b20-9418-80220b0077b6', url: 'https://github.com/MithunTechnologiesDevOps/maven-web-application.git'
+git branch: 'development', credentialsId: 'bbf2483b-27fe-447a-873f-a484eba6e458', url: 'https://github.com/modhakiran/maven-web-application.git'
 }
 
-stage('Build')
+stage('build')
 {
 sh "${mavenHome}/bin/mvn clean package"
 }
 
- /*
-stage('ExecuteSonarQubeReport')
+stage('executeSonarQubeReport')
 {
 sh "${mavenHome}/bin/mvn sonar:sonar"
 }
 
-stage('UploadArtifactIntoNexus')
+stage('uploadArtifactIntoNexus')
 {
 sh "${mavenHome}/bin/mvn deploy"
 }
-
-stage('DeployAppIntoTomcatServer')
-{
-sshagent(['d0e21efb-68d1-4829-938e-d8a7a01b293c'])
+ stage ('DeployIntoTomcatServer')
  {
-  sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@3.128.192.122:/opt/apache-tomcat-9.0.39/webapps/"   
+ sshagent(['6676f9db-978a-4d5f-bd48-e06b1db777ea']) 
+ {
+ sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@35.182.134.112:/opt/apache-tomcat-9.0.41/webapps/"
+}
+
+}
+ stage ('email')
+ {
+ mail bcc: 'modhakiran2gmail.com', body: 'build over', cc: 'modhakiran@gmail.com', from: '', replyTo: '', subject: 'build over', to: 'modhakiran@gmail.com'
  }
-}
-
-stage('SendEmailNotification')
-{
-mail bcc: 'devopstrainingblr@gmail.com', body: '''Build Over...
-
-Regards,
-Mithun Technologies,
-9980923226''', cc: 'devopstrainingblr@gmail.com', from: '', replyTo: '', subject: 'Build Over!!', to: 'devopstrainingblr@gmail.com'
-}
-*/
-
 }
