@@ -3,7 +3,7 @@ node
 properties([[$class: 'JiraProjectProperty'], [$class: 'GithubProjectProperty', displayName: '', projectUrlStr: 'https://github.com/amazon-mo/maven-web-application.git/'], pipelineTriggers([pollSCM('* * * * *')])])
 def mavenHome = tool name: "maven3.6.3"
 
-stage ('build')
+stage ('checkout')
 {
     git branch: 'development', credentialsId: 'bbf2483b-27fe-447a-873f-a484eba6e458', url: 'https://github.com/amazon-mo/maven-web-application.git'
 }
