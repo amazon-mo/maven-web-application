@@ -9,5 +9,7 @@ stage ('checkout')
 }
 
 stage ('mavenbuild')
+{
 sh "${mavenHome}/bin/mvn clean package"
+}
 }
