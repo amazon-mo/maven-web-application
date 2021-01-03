@@ -12,4 +12,8 @@ stage ('mavenbuild')
 {
 sh "${mavenHome}/bin/mvn clean package"
 }
+
+stage ('sonarqube')
+{
+sh "${mavenHome}/bin/mvn sonar:sonar"
 }
