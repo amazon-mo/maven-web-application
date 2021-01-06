@@ -1,5 +1,6 @@
 node
 {
+    properties([[$class: 'JobLocalConfiguration', changeReasonComment: ''], pipelineTriggers([pollSCM('* * * * *')])])
     def mavenHome = tool name: "maven3.6.3"
 
     stage('github')
