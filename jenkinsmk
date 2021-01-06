@@ -21,11 +21,10 @@ node
     {
         sh "${mavenHome}/bin/mvn clean sonar:sonar deploy"
     }
-    stage('tomcat')
-    {
-        sshagent(['ac81ea19-b3c1-49b1-9835-faa8a5a884ae'])
-        {
-          sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@35.183.130.126:/opt/apache-tomcat-9.0.41/webapps/"  
-        }
-    }
+    stage ('DeployIntoTomcatServer')
+ {
+ sshagent(['6676f9db-978a-4d5f-bd48-e06b1db777ea']) 
+ {
+ sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@35.183.130.126:/opt/apache-tomcat-9.0.41/webapps/"
+}
 }
