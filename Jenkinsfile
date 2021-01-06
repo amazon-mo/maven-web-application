@@ -4,7 +4,7 @@ node ('master')
 
     stage('github')
     {
-        git branch: 'development', credentialsId: 'f4274c6d-aafa-4593-be85-4f095ebf4c30', url: 'https://github.com/amazon-mo/maven-web-application.git'
+        git branch: 'master', credentialsId: 'f4274c6d-aafa-4593-be85-4f095ebf4c30', url: 'https://github.com/amazon-mo/maven-web-application.git'
     }
     stage('build')
     {
